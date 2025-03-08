@@ -75,7 +75,7 @@ export function LoginForm({
         <CardContent className=" p-0 flex flex-col">
           <div className=" relative">
             <div className="w-full absolute text-white z-20 font-semibold top-[50%] text-xl text-center">
-              <h1 className=" ">SPE Quality Parameter App</h1>
+              <h1 className=" ">SPE Quality Parameter Apps</h1>
             </div>
             <img src="/zuarione-login.jpeg" className=" brightness-50" />
           </div>
