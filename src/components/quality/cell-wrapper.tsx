@@ -7,9 +7,15 @@ type Props = {
   row: Row<QUALITY>;
   inputText: string;
   type: HTMLInputTypeAttribute;
+  qualityKey?: keyof QUALITY;
 };
 
-export default function CellWrapper({ row, inputText, type }: Props) {
+export default function CellWrapper({
+  row,
+  inputText,
+  type,
+  qualityKey,
+}: Props) {
   const [value, setValue] = useState(inputText);
 
   return (
@@ -18,6 +24,9 @@ export default function CellWrapper({ row, inputText, type }: Props) {
         type={type}
         onChange={(e) => {
           setValue(e.target.value);
+          if (qualityKey) {
+            (row.original[qualityKey] as unknown as string) = e.target.value;
+          }
         }}
         value={value}
       />

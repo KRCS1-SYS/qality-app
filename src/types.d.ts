@@ -43,6 +43,11 @@ export interface QUALITY {
   calculated_quality_last_reading_time: string;
   qa_approved_quality_last_approved_time: string;
   approved_by: string;
+  icumsa: string;
+  temprature: string;
+  moisture: string;
+  retention: string;
+  approved: boolean;
 }
 
 export interface MainQuality extends QUALITY {

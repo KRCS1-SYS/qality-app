@@ -16,6 +16,7 @@ type Props = {
   setOpen: Dispatch<SetStateAction<boolean>>;
   id: string;
   deleteHandler: (id: string) => void;
+  loader: boolean;
 };
 
 export default function DeleteDialog({
@@ -23,24 +24,29 @@ export default function DeleteDialog({
   setOpen,
   id,
   deleteHandler,
+  loader,
 }: Props) {
   return (
-    <AlertDialog open={open} onOpenChange={setOpen}>
+    <AlertDialog open={open}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>
+            Are you sure want to approve this?
+          </AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete and
-            remove data from servers.
+            When approving, the data will be saved.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel onClick={() => setOpen(false)}>
+            Cancel
+          </AlertDialogCancel>
           <AlertDialogAction
             className="bg-destructive hover:bg-destructive/80"
             onClick={() => deleteHandler(id)}
+            disabled={loader}
           >
-            Continue
+            {loader ? "Approving..." : "Approve"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

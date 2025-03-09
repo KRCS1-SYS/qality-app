@@ -54,6 +54,8 @@ import DeleteDialog from "../shared/delete-dailog";
 import { Checkbox } from "../ui/checkbox";
 import CellWrapper from "./cell-wrapper";
 import useGetSelfInfo from "@/hooks/use-self";
+import { toast } from "sonner";
+import { approveQualityAPI } from "@/lib/api";
 
 type Props = {
   data: QUALITY[];
@@ -62,8 +64,6 @@ type Props = {
 };
 
 export function QualityDataTable({ data, token, setIsReloaded }: Props) {
-  
-
   const [selectedMachine, setSelectedMachine] = React.useState<
     QUALITY | undefined
   >(undefined);
@@ -80,9 +80,10 @@ export function QualityDataTable({ data, token, setIsReloaded }: Props) {
   const [rowSelected, setRowSelected] = React.useState<undefined | QUALITY>(
     undefined
   );
+  const [isApproving, setIsApproving] = React.useState(false);
 
   const axiosInstance = createAuthenticatedAxiosInstance({}, token);
-
+  console.log("selectedMachine", selectedMachine);
   let columns: ColumnDef<QUALITY>[] = [
     {
       id: "select",
@@ -181,18 +182,7 @@ export function QualityDataTable({ data, token, setIsReloaded }: Props) {
         );
       },
       cell: ({ row }) => {
-        return (
-          <div className="">
-              <CellWrapper
-                inputText={
-                  row.original.last_approved_quantity.toString() || ""
-                }
-                type={"number"}
-                row={row}
-              />
-            
-          </div>
-        );
+        return <div className="">{row.original.last_approved_quantity}</div>;
       },
     },
     {
@@ -213,11 +203,120 @@ export function QualityDataTable({ data, token, setIsReloaded }: Props) {
       cell: ({ row }) => {
         return (
           <div className="">
-              <CellWrapper
-                inputText={row.original.qa_approved_quantity.toString() || ""}
-                type={"number"}
-                row={row}
-              />
+            <CellWrapper
+              inputText={row.original.qa_approved_quantity.toString() || ""}
+              type={"number"}
+              row={row}
+              qualityKey="qa_approved_quantity"
+            />
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "icumsa",
+      header: ({ column }) => {
+        return (
+          <Button
+            className=" cursor-pointer"
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            ICUMSA
+            <ArrowUpDown />
+          </Button>
+        );
+      },
+      cell: ({ row }) => {
+        return (
+          <div className="">
+            <CellWrapper
+              inputText={row.original.icumsa.toString() || ""}
+              type={"number"}
+              row={row}
+              qualityKey="icumsa"
+            />
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "temprature",
+      header: ({ column }) => {
+        return (
+          <Button
+            className=" cursor-pointer"
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            TEMP
+            <ArrowUpDown />
+          </Button>
+        );
+      },
+      cell: ({ row }) => {
+        return (
+          <div className="">
+            <CellWrapper
+              inputText={row.original.temprature.toString() || ""}
+              type={"number"}
+              row={row}
+              qualityKey="temprature"
+            />
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "moisture",
+      header: ({ column }) => {
+        return (
+          <Button
+            className=" cursor-pointer"
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Moisture
+            <ArrowUpDown />
+          </Button>
+        );
+      },
+      cell: ({ row }) => {
+        return (
+          <div className="">
+            <CellWrapper
+              inputText={row.original.moisture.toString() || ""}
+              type={"number"}
+              row={row}
+              qualityKey="moisture"
+            />
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "retention",
+      header: ({ column }) => {
+        return (
+          <Button
+            className=" cursor-pointer"
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Retention
+            <ArrowUpDown />
+          </Button>
+        );
+      },
+      cell: ({ row }) => {
+        return (
+          <div className="">
+            <CellWrapper
+              inputText={row.original.retention.toString() || ""}
+              type={"number"}
+              row={row}
+              qualityKey="retention"
+            />
           </div>
         );
       },
@@ -239,7 +338,9 @@ export function QualityDataTable({ data, token, setIsReloaded }: Props) {
       },
       cell: ({ row }) => {
         return (
-          <div className="">{row.original.calculated_quality_last_reading_time}</div>
+          <div className="">
+            {row.original.calculated_quality_last_reading_time}
+          </div>
         );
       },
     },
@@ -260,7 +361,9 @@ export function QualityDataTable({ data, token, setIsReloaded }: Props) {
       },
       cell: ({ row }) => {
         return (
-          <div className="">{row.original.qa_approved_quality_last_approved_time}</div>
+          <div className="">
+            {row.original.qa_approved_quality_last_approved_time}
+          </div>
         );
       },
     },
@@ -269,25 +372,66 @@ export function QualityDataTable({ data, token, setIsReloaded }: Props) {
       enableHiding: false,
       cell: ({ row }) => {
         return (
-          <DropdownMenu>
-            <DropdownMenuTrigger className=" cursor-pointer" asChild>
-              <Button variant={"outline"}>...</Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => {
-                  setOpenDeleteDialog(true);
-                  setSelectedMachine(row.original);
-                }}
-                variant="default"
-                className="w-full flex items-center justify-between cursor-pointer"
-              >
-                Delete <Trash />
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Button
+            onClick={async () => {
+              const icumsa = parseFloat(row.original.icumsa);
+              const temp = parseFloat(row.original.temprature);
+              const moisture = parseFloat(row.original.moisture);
+              const retention = parseFloat(row.original.retention);
+
+              if (isNaN(icumsa) || icumsa <= 0) {
+                toast.error(
+                  "Please enter a valid value for ICUMSA (must be greater than 0)."
+                );
+                return;
+              }
+              if (isNaN(temp) || temp <= 0) {
+                toast.error(
+                  "Please enter a valid value for Temp (must be greater than 0)."
+                );
+                return;
+              }
+              if (isNaN(moisture) || moisture <= 0) {
+                toast.error(
+                  "Please enter a valid value for Moisture (must be greater than 0)."
+                );
+                return;
+              }
+              if (isNaN(retention) || retention <= 0) {
+                toast.error(
+                  "Please enter a valid value for Retention (must be greater than 0)."
+                );
+                return;
+              }
+
+              setSelectedMachine(row.original);
+              setOpenDeleteDialog(true);
+            }}
+            className="w-full"
+            type="submit"
+            disabled={isApproving}
+          >
+            {isApproving ? "Approving..." : "Approve"}
+          </Button>
+          // <DropdownMenu>
+          //   <DropdownMenuTrigger className=" cursor-pointer" asChild>
+          //     <Button variant={"outline"}>...</Button>
+          //   </DropdownMenuTrigger>
+          //   <DropdownMenuContent>
+          //     <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          //     <DropdownMenuSeparator />
+          //     <DropdownMenuItem
+          //       onClick={() => {
+          //         setOpenDeleteDialog(true);
+          //         setSelectedMachine(row.original);
+          //       }}
+          //       variant="default"
+          //       className="w-full flex items-center justify-between cursor-pointer"
+          //     >
+          //       Delete <Trash />
+          //     </DropdownMenuItem>
+          //   </DropdownMenuContent>
+          // </DropdownMenu>
         );
       },
     },
@@ -314,12 +458,27 @@ export function QualityDataTable({ data, token, setIsReloaded }: Props) {
 
   const deleteHandler = async (id: string) => {
     try {
-    } catch (error) {}
+      setIsApproving(true);
+      const res = await axiosInstance.put(`${approveQualityAPI}/${id}`, {
+        ...selectedMachine,
+        approved: true,
+      });
+
+      if (res.status === 201 || res.status === 200) {
+        setOpenDeleteDialog(false);
+        setIsApproving(false);
+        setIsReloaded(true);
+        toast.success("Quality record approved successfully!");
+      }
+    } catch (error) {
+      console.log(error);
+      setIsApproving(false);
+      toast.error("Failed to approve quality record");
+    }
   };
 
   return (
     <div className="w-full">
-
       <div className="">
         <Table>
           <TableHeader>
@@ -360,7 +519,6 @@ export function QualityDataTable({ data, token, setIsReloaded }: Props) {
                       </TableCell>
                     ))}
                   </TableRow>
-
                 </React.Fragment>
               ))
             ) : (
@@ -403,17 +561,12 @@ export function QualityDataTable({ data, token, setIsReloaded }: Props) {
           open={openDeleteDialog}
           setOpen={setOpenDeleteDialog}
           deleteHandler={deleteHandler}
+          loader={isApproving}
         />
       )}
     </div>
   );
 }
-
-
-
-
-
-
 
 // {/* Sub Qualities as Child Rows */}
 // {row.getIsSelected() &&

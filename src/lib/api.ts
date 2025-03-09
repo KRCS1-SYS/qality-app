@@ -7,3 +7,4 @@ export const getQualityAPI = `${BACKEND_URL}/auth/v1/query`;
 export const addMachinesAPI = `${BACKEND_URL}/auth/v1/machine`;
 export const addQualityAPI = `${BACKEND_URL}/auth/v1/query`;
 export const deleteMachinesAPI = `${BACKEND_URL}/auth/v1/machine`;
+export const approveQualityAPI = `${BACKEND_URL}/auth/v1/query/approve`;
