@@ -167,25 +167,6 @@ export function QualityDataTable({ data, token, setIsReloaded }: Props) {
       },
     },
     {
-      accessorKey: "last_approved_quantity",
-      header: ({ column }) => {
-        return (
-          <Button
-            className=" cursor-pointer"
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Last Approved <br />
-            Quantity
-            <ArrowUpDown />
-          </Button>
-        );
-      },
-      cell: ({ row }) => {
-        return <div className="">{row.original.last_approved_quantity}</div>;
-      },
-    },
-    {
       accessorKey: "qa_approved_quantity",
       header: ({ column }) => {
         return (
