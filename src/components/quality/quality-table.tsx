@@ -332,7 +332,6 @@ export function QualityDataTable({ data, token, setIsReloaded }: Props) {
           </div>
         );
       },
-    },
     {
       id: "actions",
       enableHiding: false,
