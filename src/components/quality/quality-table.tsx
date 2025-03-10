@@ -316,7 +316,8 @@ export function QualityDataTable({ data, token, setIsReloaded }: Props) {
             <ArrowUpDown />
           </Button>
         );
-      },
+      }
+    },
       cell: ({ row }) => {
         return (
           <div className="">
