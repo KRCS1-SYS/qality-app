@@ -16,7 +16,7 @@ type Props = {
   setOpen: Dispatch<SetStateAction<boolean>>;
   id: string;
   deleteHandler: (id: string) => void;
-  loader: boolean;
+  loader?: boolean;
 };
 
 export default function DeleteDialog({
