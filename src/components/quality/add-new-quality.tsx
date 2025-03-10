@@ -19,11 +19,9 @@ type Props = {
 export default function AddNewQuality({ token, setReloadedTableData }: Props) {
   return (
     <Sheet>
-      /** <SheetTrigger asChild>
-        <Button variant="secondary">
-          Add <PlusCircle className="w-5 h-5" />
-        </Button>
-      </SheetTrigger>  **/
+      <SheetTrigger asChild>
+
+      </SheetTrigger>  
       <SheetContent className="w-full">
         <SheetHeader>
           <SheetTitle>Add New Quality Parameters</SheetTitle>
