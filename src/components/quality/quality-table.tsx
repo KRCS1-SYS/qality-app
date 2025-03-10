@@ -327,16 +327,6 @@ export function QualityDataTable({ data, token, setIsReloaded }: Props) {
     },
       cell: ({ row }) => {
         return (
-          <div className="">
-            {row.original.qa_approved_quality_last_approved_time}
-          </div>
-        );
-      },
-    {
-      id: "actions",
-      enableHiding: false,
-      cell: ({ row }) => {
-        return (
           <Button
             onClick={async () => {
               const icumsa = parseFloat(row.original.icumsa);
