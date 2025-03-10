@@ -316,8 +316,7 @@ export function QualityDataTable({ data, token, setIsReloaded }: Props) {
             <ArrowUpDown />
           </Button>
         );
-      }
-    },
+      },
       cell: ({ row }) => {
         return (
           <div className="">
@@ -325,6 +324,33 @@ export function QualityDataTable({ data, token, setIsReloaded }: Props) {
           </div>
         );
       },
+    },
+    {
+      accessorKey: "qa_approved_quality_last_approved_time",
+      header: ({ column }) => {
+        return (
+          <Button
+            className=" cursor-pointer"
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            QA Approved Quantity <br />
+            Reading Time
+            <ArrowUpDown />
+          </Button>
+        );
+      },
+      cell: ({ row }) => {
+        return (
+          <div className="">
+            {row.original.qa_approved_quality_last_approved_time}
+          </div>
+        );
+      },
+    },
+    {
+      id: "actions",
+      enableHiding: false,
       cell: ({ row }) => {
         return (
           <Button
